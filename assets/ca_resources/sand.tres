@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CAMovableSolid" load_steps=2 format=3 uid="uid://oxn13twdhbls"]
+
+[ext_resource type="Script" path="res://scripts/cellular_automata/particles/solid/movable_solid/ca_movable_solid.gd" id="1_a2sfr"]
+
+[resource]
+script = ExtResource("1_a2sfr")
+color = Color(0.992157, 1, 0.498039, 1)
+color_variation = Color(1, 0.509804, 0.443137, 1)
+color_variation_range = 1.0
+inertia_resistance = 0.0
+speed = Vector2(1, 1)

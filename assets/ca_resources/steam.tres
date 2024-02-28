@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CAGas" load_steps=2 format=3 uid="uid://b65idhkqmpjsa"]
+
+[ext_resource type="Script" path="res://scripts/cellular_automata/particles/gas/ca_gas.gd" id="1_o0lgd"]
+
+[resource]
+script = ExtResource("1_o0lgd")
+density = 1.0
+color = Color(0.196078, 0.172549, 0.180392, 0.517647)
+color_variation = Color(0, 0, 0, 0.698039)
+color_variation_range = 0.119
+inertia_resistance = 0.0
+speed = Vector2(1, 1)

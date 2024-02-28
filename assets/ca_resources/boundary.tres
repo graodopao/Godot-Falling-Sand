@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CAImmovableSolid" load_steps=2 format=3 uid="uid://dv57fgg5h14in"]
+
+[ext_resource type="Script" path="res://scripts/cellular_automata/particles/solid/immovable_solid/ca_immovable_solid.gd" id="1_2mvgy"]
+
+[resource]
+script = ExtResource("1_2mvgy")
+color = Color(0, 0, 0, 1)
+color_variation = Color(0, 0, 0, 1)
+color_variation_range = 0.0
+inertia_resistance = 0.0
+speed = Vector2(1, 1)
