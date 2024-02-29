@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cm87jd6ont60w"]
 
-[ext_resource type="Script" path="res://scripts/cellular_automata/chunk.gd" id="1_vxtnw"]
+[ext_resource type="Script" path="res://assets/scenes/world.gd" id="1_ft4gr"]
 [ext_resource type="Resource" uid="uid://oxn13twdhbls" path="res://assets/ca_resources/sand.tres" id="2_iag0m"]
 [ext_resource type="Resource" uid="uid://dv57fgg5h14in" path="res://assets/ca_resources/boundary.tres" id="3_28sh8"]
 
@@ -8,11 +8,11 @@
 
 [node name="RotationPoint" type="Node2D" parent="."]
 
-[node name="Chunk" type="Node2D" parent="RotationPoint"]
-script = ExtResource("1_vxtnw")
-size = Vector2i(100, 100)
-reference_ca = ExtResource("2_iag0m")
-boundary_particle = ExtResource("3_28sh8")
+[node name="World" type="Node2D" parent="RotationPoint"]
+script = ExtResource("1_ft4gr")
+size = Vector2i(1, 1)
+boundary_tile = ExtResource("3_28sh8")
+edit_tile = ExtResource("2_iag0m")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.02
@@ -20,5 +20,3 @@ autostart = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(4, 4)
-
-[connection signal="timeout" from="Timer" to="RotationPoint/Chunk" method="update"]

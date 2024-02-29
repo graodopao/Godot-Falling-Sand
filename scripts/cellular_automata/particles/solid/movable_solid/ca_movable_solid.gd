@@ -34,8 +34,8 @@ func attempt_movement(chunk: Chunk, current_position: Vector2i, next_position: V
 			chunk.get_particle_at(next_position).swap_with_tile(chunk, next_position, current_position)
 		else:
 			#chunk.move(current_position, next_position)
-			chunk.iterate_and_apply_method_between_two_points(current_position, next_position)
-			#chunk.move(current_position, next_position)
+			#chunk.iterate_and_apply_method_between_two_points(current_position, next_position)
+			chunk.move(current_position, next_position)
 		
 		reset_free_falling(metadata)
 		return true

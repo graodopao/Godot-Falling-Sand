@@ -13,8 +13,18 @@ var matrix: Array;
 ## Frozen points are skipped when updating the matrix. This array is cleared after each update.
 var frozen_points: Array[Vector2i]
 
-## A matrix of particles to update.
-#var update_matrix: Array;
+## Points to chunks connected to this one.
+@export var connected_chunk := {
+	"right": null,
+	"left": null,
+	"up": null,
+	"down": null,
+
+	"rightup": null,
+	"leftup": null,
+	"rightdown": null,
+	"leftdown": null
+}
 
 ## Used for testing.
 @export var reference_ca: CAParticle
@@ -24,10 +34,6 @@ func _ready():
 	initialize_matrix()
 	var center = round(size / 2)
 	position = -size / 2
-
-	# insert(center - Vector2i.UP * 2, reference_ca)
-	# insert(center - Vector2i.UP, reference_ca)
-	# insert(center, reference_ca)
 
 	# Creates boundaries.
 	for x in size.x:
@@ -55,11 +61,7 @@ func update():
 			if !is_occupied(coordinates) or is_frozen_point(coordinates) or !is_free_falling(coordinates): continue
 			
 			get_particle_at(coordinates).step(self, coordinates, get_tile_info(coordinates), Vector2.DOWN)
-			
-	# insert(Vector2i.ONE, reference_ca)
-	# insert(Vector2i(round(size.x / 2), 1), reference_ca)
-	# insert(Vector2i(size.x - 2, 1), reference_ca)
-
+	
 	queue_redraw()
 
 	frozen_points.clear()
@@ -94,11 +96,13 @@ func move(particle_position: Vector2i, new_position: Vector2i) -> void:
 
 	if !is_occupied(particle_position): return
 
-	var tile = get_tile_info(particle_position)
-	var previous_tile = get_tile_info(new_position)
+	var tile = search_tile_info(particle_position)
+	var previous_tile = search_tile_info(new_position)
 	
-	matrix[particle_position.x][particle_position.y] = previous_tile
-	matrix[new_position.x][new_position.y] = tile
+	set_tile_info(particle_position, previous_tile)
+	set_tile_info(new_position, tile)
+	#matrix[particle_position.x][particle_position.y] = previous_tile
+	#matrix[new_position.x][new_position.y] = tile
 	
 	freeze_point(particle_position)
 	freeze_point(new_position)
@@ -156,12 +160,43 @@ func is_free_falling(matrix_position: Vector2i) -> bool:
 # 			if (get_particle_at(position).touch()):
 # 				set_free_falling(get_tile_info(position), false)
 
+func is_position_out_of_bounds(matrix_position: Vector2i) -> bool:
+	return matrix_position.x < 0 or matrix_position.x >= size.x or matrix_position.y < 0 or matrix_position	.y >= size.y
+
 # --- Collision detection ---
 
 ## Returns true if the given position is occupied.
 func is_occupied(matrix_position: Vector2i) -> bool:
-	if matrix_position.x < 0 or matrix_position.x >= size.x or matrix_position.y < 0 or matrix_position.y >= size.y: return false
-	return matrix[matrix_position.x][matrix_position.y] != null
+	return search_tile_info(matrix_position) != null
+
+## Searches for a tile info globally. Returns null if the tile is not found.
+func search_tile_info(relative_position: Vector2i):
+	var relative_direction := ""
+
+	relative_direction += ["left", "", "right"][sign(relative_position.x) + 1]
+	relative_direction += ["up", "", "down"][sign(relative_position.y) + 1]
+
+	if (relative_direction == ""):
+		return get_tile_info(relative_position)
+	
+	if (is_instance_valid(connected_chunk[relative_direction])):
+		return connected_chunk[relative_direction].search_tile_info(relative_position - sign(relative_position) * size)
+	
+	return null
+
+## Sets the tile info at the given position globally.
+func set_tile_info(relative_position: Vector2i, tile_info: Dictionary) -> void:
+	var relative_direction := ""
+
+	relative_direction += ["left", "", "right"][sign(relative_position.x) + 1]
+	relative_direction += ["up", "", "down"][sign(relative_position.y) + 1]
+
+	if (relative_direction == ""):
+		matrix[relative_position.x][relative_position.y] = tile_info
+		return
+	
+	if (is_instance_valid(connected_chunk[relative_direction])):
+		connected_chunk[relative_direction].set_tile_info(relative_position - sign(relative_position) * size, tile_info)
 
 
 ## Returns true if the given position is a solid tile.
@@ -181,9 +216,6 @@ func has_gas_tile(matrix_position: Vector2i) -> bool:
 	if !is_occupied(matrix_position): return false
 
 	return matrix[matrix_position.x][matrix_position.y]["particle_resource"] is CAGas
-
-# FILEPATH: /home/ograodopao/Desktop/LP/assets/scripts/cellular_automata/chunk.gd
-# BEGIN: ed8c6549bwf9
 
 func iterate_and_apply_method_between_two_points(pos1: Vector2, pos2: Vector2, function: Callable = func(): return) -> Vector2:
 	# If the two points are the same no need to iterate. Just run the provided function
@@ -228,5 +260,3 @@ func iterate_and_apply_method_between_two_points(pos1: Vector2, pos2: Vector2, f
 		#if is_within_bounds(currentX, currentY):
 			#function.call_func()
 	return Vector2.INF
-
-# END: ed8c6549bwf9
