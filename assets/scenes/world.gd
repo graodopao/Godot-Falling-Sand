@@ -27,6 +27,10 @@ func generate_chunks():
 
 			chunk.position = Vector2i(x * 32, y * 32)
 			add_child(chunk)
+	
+	for x in range(size.x):
+		for y in range(size.y):
+			set_chunk_connections(temp_matrix, Vector2i(x, y), temp_matrix[x][y])
 
 func set_chunk_connections(matrix: Array, chunk_position: Vector2i, chunk: Chunk):
 	
