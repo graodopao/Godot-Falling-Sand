@@ -43,7 +43,6 @@ func _ready():
 	for y in size.y:
 		insert(Vector2i(0, y), boundary_particle)
 		insert(Vector2i(size.x - 1, y), boundary_particle)
-		
 
 
 # Updates the matrix, bottom to top, left to right.
